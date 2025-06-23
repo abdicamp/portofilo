@@ -1,0 +1,197 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+import 'component/about_section.dart';
+import 'component/contact_session.dart';
+import 'component/footer.dart';
+import 'component/hero_section.dart';
+import 'component/navbar.dart';
+import 'component/project_section.dart';
+
+enum Section { none, hero, about, projects, contact }
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final scrollController = ScrollController();
+
+  final aboutKey = GlobalKey();
+  final heroSectionKey = GlobalKey();
+  final contactKey = GlobalKey();
+  final projectSectionKey = GlobalKey();
+  final footerSectionKey = GlobalKey();
+
+  Section currentSection = Section.hero;
+
+  double? progress = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(onScroll);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  void scrollTo(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void onScroll() {
+    final offset = scrollController.offset;
+  
+
+    setState(() {
+      progress = ((offset - (_getOffsetFromKey(aboutKey) - 300)) / 300).clamp(0.0, 1.0);
+      print("progress : ${offset}");
+      if (offset >= 0 && offset <= 324) {
+        currentSection = Section.hero;
+        print("currentSection hero : ${currentSection}");
+      } else if (offset >= 324 && offset <= 910) {
+        currentSection = Section.about;
+        print("currentSection about : ${currentSection}");
+      } else if (offset >= 1800 && offset <= 1810) {
+        currentSection = Section.projects;
+        print("currentSection project : ${currentSection}");
+      } else if (offset >= 2240 && offset <= 2816) {
+        currentSection = Section.contact;
+        print("currentSection contact: ${currentSection}");
+      }
+    });
+  }
+
+  double _getOffsetFromKey(GlobalKey key) {
+    final context = key.currentContext;
+    if (context == null) return double.infinity;
+
+    final box = context.findRenderObject();
+    if (box is RenderBox) {
+      // Hanya jika bukan sliver
+      return box.localToGlobal(Offset.zero).dy;
+    }
+
+    try {
+      final sliverBox = box as RenderSliver;
+      return sliverBox.constraints.scrollOffset;
+    } catch (_) {
+      return double.infinity;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      endDrawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 60),
+          children: [
+            ListTile(
+              title: const Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+                scrollTo(aboutKey);
+              },
+            ),
+            ListTile(
+              title: const Text('Projects'),
+              onTap: () {
+                Navigator.pop(context);
+                scrollTo(projectSectionKey);
+              },
+            ),
+            ListTile(
+              title: const Text('Contact'),
+              onTap: () {
+                Navigator.pop(context);
+                scrollTo(contactKey);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _NavbarDelegate(
+              onHomeTap: () => scrollTo(heroSectionKey),
+              onAboutTap: () => scrollTo(aboutKey),
+              onProjectTap: () => scrollTo(projectSectionKey),
+              onContactTap: () => scrollTo(contactKey),
+              currentSection: currentSection,
+            ),
+          ),
+          SliverToBoxAdapter(key: heroSectionKey, child: HeroSection()),
+          SliverToBoxAdapter(
+              key: aboutKey,
+              child: AboutSection(
+                currentSections: currentSection,
+               
+              )),
+          SliverToBoxAdapter(key: projectSectionKey, child: ProjectSection()),
+          SliverToBoxAdapter(key: contactKey, child: ContactSection()),
+          SliverToBoxAdapter(key: footerSectionKey, child: Footer()),
+        ],
+      ),
+    );
+  }
+}
+
+class _NavbarDelegate extends SliverPersistentHeaderDelegate {
+  final VoidCallback onHomeTap;
+  final VoidCallback onAboutTap;
+  final VoidCallback onProjectTap;
+  final VoidCallback onContactTap;
+  final Section currentSection;
+
+  const _NavbarDelegate({
+    required this.onHomeTap,
+    required this.onAboutTap,
+    required this.onProjectTap,
+    required this.onContactTap,
+    required this.currentSection,
+  });
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+      color: Colors.black,
+      elevation: 4,
+      child: SafeArea(
+        child: NavBar(
+          onHomeTap: onHomeTap,
+          onAboutTap: onAboutTap,
+          onProjectTap: onProjectTap,
+          onContactTap: onContactTap,
+          currentSection: currentSection,
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get minExtent => 74;
+  @override
+  double get maxExtent => 74;
+
+  @override
+  bool shouldRebuild(covariant _NavbarDelegate oldDelegate) => true;
+}
