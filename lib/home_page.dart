@@ -57,41 +57,21 @@ class _HomePageState extends State<HomePage> {
     final offset = scrollController.offset;
 
     setState(() {
-      progress = ((offset - (_getOffsetFromKey(aboutKey) - 300)) / 300)
-          .clamp(0.0, 1.0);
-      print("progress : ${offset}");
       if (offset >= 0 && offset <= 99) {
         currentSection = Section.hero;
         // print("currentSection hero : ${currentSection}");
       } else if (offset >= 100 && offset <= 910) {
         currentSection = Section.about;
         // print("currentSection about : ${currentSection}");
-      } else if (offset >= 1100 && offset <= 1810) {
+      } else if (offset >= 1800 && offset <= 1810) {
         currentSection = Section.projects;
-        // print("currentSection project : ${currentSection}");
+        print("offset project: ${offset}");
+        print("currentSection project : ${currentSection}");
       } else if (offset >= 2240 && offset <= 2816) {
         currentSection = Section.contact;
         // print("currentSection contact: ${currentSection}");
       }
     });
-  }
-
-  double _getOffsetFromKey(GlobalKey key) {
-    final context = key.currentContext;
-    if (context == null) return double.infinity;
-
-    final box = context.findRenderObject();
-    if (box is RenderBox) {
-      // Hanya jika bukan sliver
-      return box.localToGlobal(Offset.zero).dy;
-    }
-
-    try {
-      final sliverBox = box as RenderSliver;
-      return sliverBox.constraints.scrollOffset;
-    } catch (_) {
-      return double.infinity;
-    }
   }
 
   @override

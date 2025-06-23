@@ -17,6 +17,7 @@ class _HeroSectionState extends State<HeroSection>
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
   double _scale = 1.0;
+  double values = 0.0;
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _HeroSectionState extends State<HeroSection>
       final newScale = 1.0 + (offset / 300.0).clamp(0.0, 0.5); // max 1.5x
       setState(() {
         _scale = newScale;
+        values = (offset / 150).clamp(0.0, 1.0);
       });
     });
     _controller = AnimationController(
@@ -60,7 +62,19 @@ class _HeroSectionState extends State<HeroSection>
     return Container(
       height: 900,
       width: double.infinity,
-      color: Colors.black,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+               Colors.black,
+            Color.lerp(
+                Colors.white, Colors.black, values)!, // dari putih ke hitam
+         
+          ],
+          stops: [0.0, 2.0], // gradasi hanya sampai setengah
+        ),
+      ),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -80,10 +94,10 @@ class _HeroSectionState extends State<HeroSection>
               width: size,
               height: size,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: BoxShape.rectangle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.purple.withOpacity(0.6),
+                    Colors.black.withOpacity(0.6),
                     Colors.transparent,
                   ],
                   stops: [0.0, 1.0],
