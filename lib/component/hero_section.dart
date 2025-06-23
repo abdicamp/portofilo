@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 class HeroSection extends StatefulWidget {
-  const HeroSection({super.key});
+  ScrollController scrollController;
+  HeroSection({super.key, required this.scrollController});
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
@@ -15,9 +16,20 @@ class _HeroSectionState extends State<HeroSection>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
+  double _scale = 1.0;
+
   @override
   void initState() {
     super.initState();
+    widget.scrollController.addListener(() {
+      final offset = widget.scrollController.offset;
+
+      // Hitung skala: makin ke bawah makin besar (maks 1.5x)
+      final newScale = 1.0 + (offset / 300.0).clamp(0.0, 0.5); // max 1.5x
+      setState(() {
+        _scale = newScale;
+      });
+    });
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -94,14 +106,14 @@ class _HeroSectionState extends State<HeroSection>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Lottie.asset(
-                              'assets/animation/terminal.json',
-                              width: 30,
-                              height: 30,
-                              repeat: true,
-                              reverse: false,
-                              animate: true,
-                            ),
+                            // Lottie.asset(
+                            //   'assets/animation/terminal.json',
+                            //   width: 30,
+                            //   height: 30,
+                            //   repeat: true,
+                            //   reverse: false,
+                            //   animate: true,
+                            // ),
                             Text(
                               'Hi, I’m Abdi',
                               style: GoogleFonts.poppins(
@@ -112,9 +124,17 @@ class _HeroSectionState extends State<HeroSection>
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Software Engineer | Mobile Developer',
+                              'Software Engineer — Flutter, Node.js, SQL & IoT',
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'I build mobile apps, APIs, and smart connected systems.',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
                                 color: Colors.white70,
                               ),
                             ),
@@ -125,13 +145,16 @@ class _HeroSectionState extends State<HeroSection>
                       // Image Section
                       Expanded(
                         flex: 2,
-                        child: Lottie.asset(
-                          'assets/animation/development.json',
-                          width: size,
-                          height: size,
-                          repeat: true,
-                          reverse: false,
-                          animate: true,
+                        child: Transform.scale(
+                          scale: _scale,
+                          child: Lottie.asset(
+                            'assets/animation/development.json',
+                            height: 500,
+                            width: 500,
+                            repeat: true,
+                            reverse: false,
+                            animate: true,
+                          ),
                         ),
                       ),
                     ],
@@ -164,9 +187,17 @@ class _HeroSectionState extends State<HeroSection>
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Software Engineer | Mobile Developer',
+                              'Software Engineer — Flutter, Node.js, SQL & IoT',
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              'I build mobile apps, APIs, and smart connected systems.',
+                              style: GoogleFonts.poppins(
+                                fontSize: 15,
                                 color: Colors.white70,
                               ),
                             ),
@@ -177,13 +208,16 @@ class _HeroSectionState extends State<HeroSection>
                       // Image Section
                       Expanded(
                         flex: 2,
-                        child: Lottie.asset(
-                          'assets/animation/development.json',
-                          width: size,
-                          height: size,
-                          repeat: true,
-                          reverse: false,
-                          animate: true,
+                        child: Transform.scale(
+                          scale: _scale,
+                          child: Lottie.asset(
+                            'assets/animation/development.json',
+                            height: 500,
+                            width: 500,
+                            repeat: true,
+                            reverse: false,
+                            animate: true,
+                          ),
                         ),
                       ),
                     ],

@@ -47,8 +47,10 @@ class NavBar extends StatelessWidget {
               children: [
                 _navItem('Home', onHomeTap, currentSection == Section.hero),
                 _navItem('About', onAboutTap, currentSection == Section.about),
-                _navItem('Projects', onProjectTap, currentSection == Section.projects),
-                _navItem('Contact', onContactTap, currentSection == Section.contact),
+                _navItem('Projects', onProjectTap,
+                    currentSection == Section.projects),
+                _navItem(
+                    'Contact', onContactTap, currentSection == Section.contact),
               ],
             ),
         ],

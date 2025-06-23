@@ -55,23 +55,23 @@ class _HomePageState extends State<HomePage> {
 
   void onScroll() {
     final offset = scrollController.offset;
-  
 
     setState(() {
-      progress = ((offset - (_getOffsetFromKey(aboutKey) - 300)) / 300).clamp(0.0, 1.0);
+      progress = ((offset - (_getOffsetFromKey(aboutKey) - 300)) / 300)
+          .clamp(0.0, 1.0);
       print("progress : ${offset}");
-      if (offset >= 0 && offset <= 324) {
+      if (offset >= 0 && offset <= 99) {
         currentSection = Section.hero;
-        print("currentSection hero : ${currentSection}");
-      } else if (offset >= 324 && offset <= 910) {
+        // print("currentSection hero : ${currentSection}");
+      } else if (offset >= 100 && offset <= 910) {
         currentSection = Section.about;
-        print("currentSection about : ${currentSection}");
-      } else if (offset >= 1800 && offset <= 1810) {
+        // print("currentSection about : ${currentSection}");
+      } else if (offset >= 1100 && offset <= 1810) {
         currentSection = Section.projects;
-        print("currentSection project : ${currentSection}");
+        // print("currentSection project : ${currentSection}");
       } else if (offset >= 2240 && offset <= 2816) {
         currentSection = Section.contact;
-        print("currentSection contact: ${currentSection}");
+        // print("currentSection contact: ${currentSection}");
       }
     });
   }
@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(183, 185, 185, 185),
       endDrawer: Drawer(
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 60),
@@ -138,14 +139,22 @@ class _HomePageState extends State<HomePage> {
               currentSection: currentSection,
             ),
           ),
-          SliverToBoxAdapter(key: heroSectionKey, child: HeroSection()),
+          SliverToBoxAdapter(
+              key: heroSectionKey,
+              child: HeroSection(
+                scrollController: scrollController,
+              )),
           SliverToBoxAdapter(
               key: aboutKey,
               child: AboutSection(
+                scrollController: scrollController,
                 currentSections: currentSection,
-               
               )),
-          SliverToBoxAdapter(key: projectSectionKey, child: ProjectSection()),
+          SliverToBoxAdapter(
+              key: projectSectionKey,
+              child: ProjectSection(
+                  // currentSections: currentSection,
+                  )),
           SliverToBoxAdapter(key: contactKey, child: ContactSection()),
           SliverToBoxAdapter(key: footerSectionKey, child: Footer()),
         ],

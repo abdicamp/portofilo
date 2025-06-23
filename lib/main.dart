@@ -7,7 +7,6 @@ import 'component/navbar.dart';
 import 'component/project_section.dart';
 import 'home_page.dart';
 
-
 void main() {
   runApp(const PortfolioApp());
 }
@@ -20,7 +19,18 @@ class PortfolioApp extends StatelessWidget {
     return MaterialApp(
       title: 'My Portofolio',
       debugShowCheckedModeBanner: false,
-      home:  HomePage(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white, // <- ini yang penting
+        primaryColor: Colors.white, // opsional
+        colorScheme: ColorScheme.light(
+          background: Colors.white, // opsional
+          primary: Colors.black, // ganti sesuai gaya kamu
+        ),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.black), // pastikan teks hitam
+        ),
+      ),
+      home: HomePage(),
     );
   }
 }

@@ -37,7 +37,6 @@ class ProjectSection extends StatelessWidget {
                 link: "https://your-portfolio-link.com",
               ),
 
-             
               // Tambahkan project lain di sini
             ],
           )
