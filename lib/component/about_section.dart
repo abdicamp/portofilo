@@ -27,7 +27,7 @@ class _AboutSectionState extends State<AboutSection>
   late Animation<Offset> _animation;
   bool hasAnimated = false; // flag agar tidak animate ulang
   double _scale = 1.0;
-  double _scaleText = 0.9;
+  double _scaleText = 0.7;
   double values = 0.0;
   double gradientFadeOpacity = 1.0;
 
@@ -48,17 +48,16 @@ class _AboutSectionState extends State<AboutSection>
       double scale;
 
       if (offset <= 1000) {
-        // Membesar dari 1.0 ke 1.5
         double diff = offset - 500;
         double t = (diff / 500).clamp(0.0, 1.0);
-        scale = (1.0 + (diff / 500)).clamp(1.0, 1.5);
-        _scaleText = lerpDouble(0.8, 1.0, t)!;
+        scale = (1.0 + (diff / 500)).clamp(0.8, 1.5);
+        _scaleText = lerpDouble(0.7, 1.0, t)!;
       } else {
         // Mengecil kembali dari 1.5 ke 1.0
         double diff = offset - 1000;
         double t = (diff / 500).clamp(0.0, 1.0);
-        scale = (1.5 - (diff / 500)).clamp(1.0, 1.5);
-        _scaleText = lerpDouble(1.0, 0.8, t)!;
+        scale = (1.5 - (diff / 500)).clamp(0.8, 1.5);
+        _scaleText = lerpDouble(1.0, 0.7, t)!;
       }
 
       setState(() {
@@ -105,191 +104,214 @@ class _AboutSectionState extends State<AboutSection>
 
     final isMobile = MediaQuery.of(context).size.width < 600;
 
-    return Container(
-      height: 1000,
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.lerp(
-                Colors.white, Colors.black, values)!, // dari putih ke hitam
-            Colors.white, // setengah bawah tetap putih
-          ],
-          stops: [0.0, 0.5], // gradasi hanya sampai setengah
-        ),
-      ),
-      width: double.infinity,
-      child: isMobile
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ShaderMask(
-                  shaderCallback: (bounds) {
-                    return LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color.lerp(Colors.white, Colors.black,
-                            values)!, // dari putih ke hitam
-                        Colors.white, // setengah bawah tetap putih
-                      ],
-                      stops: [0.0, 0.5], // gradasi setengah atas
-                    ).createShader(bounds);
-                  },
-                  blendMode: BlendMode.srcIn,
-                  child: Text(
-                    "About Me",
-                    style: GoogleFonts.poppins(
-                      fontSize: 56,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
-                      height: 1.2,
-                      color:
-                          Colors.white, // tetap putih agar ShaderMask bekerja
-                    ),
-                  ),
-                ),
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 800),
-                  curve: Curves.easeOutBack, // efek mantul saat timbul
-                  builder: (context, value, child) {
-                    return Opacity(
-                      opacity: value,
-                      child: Transform.scale(
-                        scale: value,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: Lottie.asset(
-                    'assets/animation/aboutme.json',
-                    width: size,
-                    height: size,
-                    repeat: true,
-                    reverse: false,
-                    animate: true,
-                  ),
-                ),
-                Column(
+    return Stack(
+      children: [
+        Container(
+          height: 1000,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.lerp(
+                    Colors.white, Colors.black, values)!, // dari putih ke hitam
+                Colors.white, // setengah bawah tetap putih
+              ],
+              stops: [0.0, 0.5], // gradasi hanya sampai setengah
+            ),
+          ),
+          width: double.infinity,
+          child: isMobile
+              ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: aboutMeParagraph.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    String line = entry.value;
-
-                    return TweenAnimationBuilder<double>(
-                      tween: Tween(
-                          begin: 0.0,
-                          end: widget.currentSections != Section.hero
-                              ? 1.0
-                              : 0.0),
-                      duration: Duration(milliseconds: 600 + index * 200),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color.lerp(Colors.white, Colors.black,
+                                values)!, // dari putih ke hitam
+                            Colors.white, // setengah bawah tetap putih
+                          ],
+                          stops: [0.0, 0.5], // gradasi setengah atas
+                        ).createShader(bounds);
+                      },
+                      blendMode: BlendMode.srcIn,
+                      child: Text(
+                        "About Me",
+                        style: GoogleFonts.poppins(
+                          fontSize: 56,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
+                          height: 1.2,
+                          color: Colors
+                              .white, // tetap putih agar ShaderMask bekerja
+                        ),
+                      ),
+                    ),
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      duration: const Duration(milliseconds: 800),
+                      curve: Curves.easeOutBack, // efek mantul saat timbul
                       builder: (context, value, child) {
                         return Opacity(
                           opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, (1 - value) * 20),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: Text(
-                                line,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 13, height: 1.6),
-                              ),
-                            ),
+                          child: Transform.scale(
+                            scale: value,
+                            child: child,
                           ),
                         );
                       },
-                    );
-                  }).toList(),
-                ),
-              ],
-            ).animate().fade(duration: 800.ms).slideY(begin: 0.2)
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Transform.scale(
-                    scale: _scaleText,
-                    child: Column(
+                      child: Lottie.asset(
+                        'assets/animation/aboutme.json',
+                        width: size,
+                        height: size,
+                        repeat: true,
+                        reverse: false,
+                        animate: true,
+                      ),
+                    ),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "About Me",
-                          style: GoogleFonts.poppins(
-                            fontSize: 56,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.5,
-                            height: 1.2,
-                            color: const Color.fromARGB(255, 58, 58,
-                                58), // tetap putih agar ShaderMask bekerja
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                              aboutMeParagraph.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            String line = entry.value;
+                      children: aboutMeParagraph.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        String line = entry.value;
 
-                            return TweenAnimationBuilder<double>(
-                              tween: Tween(
-                                  begin: 0.0,
-                                  end: widget.currentSections != Section.hero
-                                      ? 1.0
-                                      : 0.0),
-                              duration:
-                                  Duration(milliseconds: 1000 + index * 500),
-                              builder: (context, value, child) {
-                                return Opacity(
-                                  opacity: value,
-                                  child: Transform.translate(
-                                    offset: Offset(0, (1 - value) * 20),
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 12),
-                                      child: Text(
-                                        line,
-                                        textAlign: TextAlign.justify,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 18, height: 1.6),
-                                      ),
-                                    ),
+                        return TweenAnimationBuilder<double>(
+                          tween: Tween(
+                              begin: 0.0,
+                              end: widget.currentSections != Section.hero
+                                  ? 1.0
+                                  : 0.0),
+                          duration: Duration(milliseconds: 600 + index * 200),
+                          builder: (context, value, child) {
+                            return Opacity(
+                              opacity: value,
+                              child: Transform.translate(
+                                offset: Offset(0, (1 - value) * 20),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Text(
+                                    line,
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 13, height: 1.6),
                                   ),
-                                );
-                              },
+                                ),
+                              ),
                             );
-                          }).toList(),
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ).animate().fade(duration: 800.ms).slideY(begin: 0.2)
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Transform.scale(
+                        scale: _scaleText,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "About Me",
+                              style: GoogleFonts.poppins(
+                                fontSize: 56,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1.5,
+                                height: 1.2,
+                                color: const Color.fromARGB(255, 58, 58,
+                                    58), // tetap putih agar ShaderMask bekerja
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:
+                                  aboutMeParagraph.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                String line = entry.value;
+
+                                return TweenAnimationBuilder<double>(
+                                  tween: Tween(
+                                      begin: 0.0,
+                                      end:
+                                          widget.currentSections != Section.hero
+                                              ? 1.0
+                                              : 0.0),
+                                  duration: Duration(
+                                      milliseconds: 1000 + index * 500),
+                                  builder: (context, value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, (1 - value) * 20),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 12),
+                                          child: Text(
+                                            line,
+                                            textAlign: TextAlign.justify,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 18, height: 1.6),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Transform.scale(
-                    scale: _scale,
-                    child: Lottie.asset(
-                      'assets/animation/aboutme.json',
-                      width: 500,
-                      height: 500,
-                      reverse: false,
-                      animate: true,
-                      repeat: true,
+                    Expanded(
+                      flex: 2,
+                      child: Transform.scale(
+                        scale: _scale,
+                        child: Lottie.asset(
+                          'assets/animation/aboutme.json',
+                          width: 500,
+                          height: 500,
+                          reverse: false,
+                          animate: true,
+                          repeat: true,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                ).animate().fade(duration: 1500.ms).slideY(begin: 0.2),
+        ),
+        Positioned(
+          top: 100,
+          left: -70,
+          child: ClipRect(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'ABOUT ME',
+                style: GoogleFonts.poppins(
+                  fontSize: 180,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black.withOpacity(0.03), // sangat transparan
                 ),
-              ],
-            ).animate().fade(duration: 800.ms).slideY(begin: 0.2),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

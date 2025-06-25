@@ -20,8 +20,8 @@ class PortfolioApp extends StatelessWidget {
       title: 'My Portofolio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white, // <- ini yang penting
-        primaryColor: Colors.white, // opsional
+        scaffoldBackgroundColor: Colors.black, // <- ini yang penting
+        primaryColor: Colors.black, // opsional
         colorScheme: ColorScheme.light(
           background: Colors.white, // opsional
           primary: Colors.black, // ganti sesuai gaya kamu

@@ -41,6 +41,9 @@ dependencies:
   flutter_animate: ^4.5.0
   lottie: ^3.2.0
   animated_text_kit: ^4.2.3
+  video_player: ^2.9.5
+  device_frame: ^1.3.0
+  carousel_slider: ^5.1.1
   
 
 dev_dependencies:
@@ -69,6 +72,7 @@ flutter:
   assets:
     - assets/images/
     - assets/animation/
+    - assets/videos/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:portofilo/component/experience.dart';
 
 import 'component/about_section.dart';
 import 'component/contact_session.dart';
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final scrollController = ScrollController();
 
   final aboutKey = GlobalKey();
+  final experienceKey = GlobalKey();
   final heroSectionKey = GlobalKey();
   final contactKey = GlobalKey();
   final projectSectionKey = GlobalKey();
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(183, 185, 185, 185),
+      backgroundColor: Colors.white,
       endDrawer: Drawer(
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 60),
@@ -121,6 +123,12 @@ class _HomePageState extends State<HomePage> {
           ),
           SliverToBoxAdapter(
               key: heroSectionKey,
+              child: Experience(
+                scrollController: scrollController,
+                currentSections: currentSection,
+              )),
+          SliverToBoxAdapter(
+              key: projectSectionKey,
               child: HeroSection(
                 scrollController: scrollController,
               )),
@@ -130,11 +138,17 @@ class _HomePageState extends State<HomePage> {
                 scrollController: scrollController,
                 currentSections: currentSection,
               )),
-          SliverToBoxAdapter(
-              key: projectSectionKey,
-              child: ProjectSection(
-                  // currentSections: currentSection,
-                  )),
+          // SliverToBoxAdapter(
+          //     key: projectSectionKey,
+          //     child: Experience(
+          //       scrollController: scrollController,
+          //       currentSections: currentSection,
+          //     )),
+          // SliverToBoxAdapter(
+          //     key: projectSectionKey,
+          //     child: ProjectSection(
+          //         // currentSections: currentSection,
+          //         )),
           SliverToBoxAdapter(key: contactKey, child: ContactSection()),
           SliverToBoxAdapter(key: footerSectionKey, child: Footer()),
         ],

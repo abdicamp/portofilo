@@ -32,6 +32,7 @@ class _HeroSectionState extends State<HeroSection>
         values = (offset / 150).clamp(0.0, 1.0);
       });
     });
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -67,10 +68,9 @@ class _HeroSectionState extends State<HeroSection>
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-               Colors.black,
+            Colors.black,
             Color.lerp(
                 Colors.white, Colors.black, values)!, // dari putih ke hitam
-         
           ],
           stops: [0.0, 2.0], // gradasi hanya sampai setengah
         ),
