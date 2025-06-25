@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,8 +108,8 @@ class _HeroSectionState extends State<HeroSection>
               ),
             ),
           ),
-
           // Konten utama
+
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
             child: isMobile
@@ -128,14 +131,31 @@ class _HeroSectionState extends State<HeroSection>
                             //   reverse: false,
                             //   animate: true,
                             // ),
-                            Text(
-                              'Hi, I’m Abdi',
-                              style: GoogleFonts.poppins(
-                                fontSize: 48,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            AnimatedTextKit(
+                              totalRepeatCount: 1,
+                              pause: const Duration(milliseconds: 1000),
+                              displayFullTextOnTap: true,
+                              stopPauseOnTap: true,
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  'Hello, I am Abdi 👋',
+                                  textStyle: GoogleFonts.poppins(
+                                    fontSize: 48,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  speed: const Duration(milliseconds: 100),
+                                ),
+                              ],
                             ),
+                            // Text(
+                            //   'Hi, I’m Abdi',
+                            //   style: GoogleFonts.poppins(
+                            //     fontSize: 48,
+                            //     color: Colors.white,
+                            //     fontWeight: FontWeight.bold,
+                            //   ),
+                            // ),
                             const SizedBox(height: 10),
                             Text(
                               'Software Engineer — Flutter, Node.js, SQL & IoT',
@@ -177,27 +197,29 @@ class _HeroSectionState extends State<HeroSection>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // Text Section
+
                       Expanded(
                         flex: 3,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            //   Lottie.asset(
-                            //   'assets/animation/terminal.json',
-                            //   width: 100,
-                            //   height: 100,
-                            //   repeat: true,
-                            //   reverse: false,
-                            //   animate: true,
-                            // ),
-                            Text(
-                              'Hi, I’m Abdi',
-                              style: GoogleFonts.poppins(
-                                fontSize: 48,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            AnimatedTextKit(
+                              totalRepeatCount: 1,
+                              pause: const Duration(milliseconds: 1000),
+                              displayFullTextOnTap: true,
+                              stopPauseOnTap: true,
+                              animatedTexts: [
+                                TypewriterAnimatedText(
+                                  'Hi, I’m Abdi 👋',
+                                  textStyle: GoogleFonts.poppins(
+                                    fontSize: 48,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  speed: const Duration(milliseconds: 300),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 10),
                             Text(

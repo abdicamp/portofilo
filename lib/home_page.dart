@@ -9,7 +9,7 @@ import 'component/hero_section.dart';
 import 'component/navbar.dart';
 import 'component/project_section.dart';
 
-enum Section { none, hero, about, projects, contact }
+enum Section { none, hero, about, experience, projects, contact }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -65,8 +65,8 @@ class _HomePageState extends State<HomePage> {
       } else if (offset >= 100 && offset <= 910) {
         currentSection = Section.about;
         // print("currentSection about : ${currentSection}");
-      } else if (offset >= 1800 && offset <= 1810) {
-        currentSection = Section.projects;
+      } else if (offset >= 1800 && offset <= 3084) {
+        currentSection = Section.experience;
         print("offset project: ${offset}");
         print("currentSection project : ${currentSection}");
       } else if (offset >= 2240 && offset <= 2816) {
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Projects'),
               onTap: () {
                 Navigator.pop(context);
-                scrollTo(projectSectionKey);
+                scrollTo(experienceKey);
               },
             ),
             ListTile(
@@ -116,25 +116,26 @@ class _HomePageState extends State<HomePage> {
             delegate: _NavbarDelegate(
               onHomeTap: () => scrollTo(heroSectionKey),
               onAboutTap: () => scrollTo(aboutKey),
-              onProjectTap: () => scrollTo(projectSectionKey),
+              onProjectTap: () => scrollTo(experienceKey),
               onContactTap: () => scrollTo(contactKey),
               currentSection: currentSection,
             ),
           ),
+
           SliverToBoxAdapter(
               key: heroSectionKey,
-              child: Experience(
-                scrollController: scrollController,
-                currentSections: currentSection,
-              )),
-          SliverToBoxAdapter(
-              key: projectSectionKey,
               child: HeroSection(
                 scrollController: scrollController,
               )),
           SliverToBoxAdapter(
               key: aboutKey,
               child: AboutSection(
+                scrollController: scrollController,
+                currentSections: currentSection,
+              )),
+          SliverToBoxAdapter(
+              key: experienceKey,
+              child: Experience(
                 scrollController: scrollController,
                 currentSections: currentSection,
               )),
