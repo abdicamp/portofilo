@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portofilo/component/experience.dart';
 import 'component/about_section.dart';
 import 'component/contact_session.dart';
 import 'component/footer.dart';
@@ -30,7 +31,7 @@ class PortfolioApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.black), // pastikan teks hitam
         ),
       ),
-      home: HomePage(),
+      home: Experience()
     );
   }
 }

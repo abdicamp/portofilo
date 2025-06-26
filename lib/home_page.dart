@@ -59,19 +59,15 @@ class _HomePageState extends State<HomePage> {
     final offset = scrollController.offset;
 
     setState(() {
+      print("offset : ${offset}");
       if (offset >= 0 && offset <= 99) {
         currentSection = Section.hero;
-        // print("currentSection hero : ${currentSection}");
       } else if (offset >= 100 && offset <= 910) {
         currentSection = Section.about;
-        // print("currentSection about : ${currentSection}");
       } else if (offset >= 1800 && offset <= 3084) {
-        currentSection = Section.experience;
-        print("offset project: ${offset}");
-        print("currentSection project : ${currentSection}");
+        currentSection = Section.projects;
       } else if (offset >= 2240 && offset <= 2816) {
         currentSection = Section.contact;
-        // print("currentSection contact: ${currentSection}");
       }
     });
   }
@@ -116,11 +112,12 @@ class _HomePageState extends State<HomePage> {
             delegate: _NavbarDelegate(
               onHomeTap: () => scrollTo(heroSectionKey),
               onAboutTap: () => scrollTo(aboutKey),
-              onProjectTap: () => scrollTo(experienceKey),
+              onProjectTap: () => scrollTo(projectSectionKey),
               onContactTap: () => scrollTo(contactKey),
               currentSection: currentSection,
             ),
           ),
+
 
           SliverToBoxAdapter(
               key: heroSectionKey,
@@ -133,12 +130,19 @@ class _HomePageState extends State<HomePage> {
                 scrollController: scrollController,
                 currentSections: currentSection,
               )),
+
           SliverToBoxAdapter(
-              key: experienceKey,
-              child: Experience(
+              key: projectSectionKey,
+              child: ProjectSection(
                 scrollController: scrollController,
                 currentSections: currentSection,
               )),
+          // SliverToBoxAdapter(
+          //     key: experienceKey,
+          //     child: Experience(
+          //       scrollController: scrollController,
+          //       currentSections: currentSection,
+          //     )),
           // SliverToBoxAdapter(
           //     key: projectSectionKey,
           //     child: Experience(
