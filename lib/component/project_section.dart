@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:device_frame/device_frame.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,7 @@ import 'package:portofilo/widgets/full_Screen_video.dart';
 import 'package:portofilo/widgets/interactive.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../widgets/interactive_zoom.dart';
 
@@ -31,37 +33,65 @@ class ProjectSection extends StatefulWidget {
 class _ProjectSectionState extends State<ProjectSection> {
   ScrollController scrollControllerList = ScrollController();
   ScrollController scrollControllerList2 = ScrollController();
-  late VideoPlayerController _controller;
+  late YoutubePlayerController _controller;
   double offset = 0.0;
   double animationValue = 1.0;
   double values = 0.0;
   late Timer _timer;
   late Timer _timerDown;
 
-  List<String> listRole = [
-    "Full Stack Developer",
-    "Implemented geofencing for check-in/out ",
-    "Integrated facial recognition (described generally)",
-    "Developed backend APIs for leave, permission, and overtime request handling",
-    "UI development for attendance logs and request tracking",
-  ];
+  final listRole = {
+    'en': [
+      "Full Stack Developer",
+      "Implemented geofencing for check-in/out",
+      "Integrated facial recognition (described generally)",
+      "Developed backend APIs for leave, permission, and overtime request handling",
+      "UI development for attendance logs and request tracking",
+    ],
+    'id': [
+      "Pengembang Full Stack",
+      "Mengimplementasikan geofencing untuk proses check-in/check-out",
+      "Mengintegrasikan pengenalan wajah (dijelaskan secara umum)",
+      "Mengembangkan API backend untuk pengajuan cuti, izin, dan lembur",
+      "Membuat antarmuka pengguna untuk log absensi dan pelacakan permintaan",
+    ],
+  };
 
-  List<String> features = [
-    "Location-based attendance with validation radius",
-    "Face recognition (can be described as 'secure ID check')",
-    "Online leave, permission, and overtime requests ",
-    "Real-time approval workflows",
-    "User profile and history log",
-    "Attendance log and request history",
-    "Attachment uploads (for permissions)",
-    "User profile management",
-  ];
+  final features = {
+    'en': [
+      "Location-based attendance with validation radius",
+      "Face recognition (can be described as 'secure ID check')",
+      "Online leave, permission, and overtime requests",
+      "Real-time approval workflows",
+      "User profile and history log",
+      "Attendance log and request history",
+      "Attachment uploads (for permissions)",
+      "User profile management",
+    ],
+    'id': [
+      "Absensi berbasis lokasi dengan radius validasi",
+      "Pengenalan wajah (bisa disebut 'pemeriksaan identitas aman')",
+      "Pengajuan cuti, izin, dan lembur secara online",
+      "Alur persetujuan secara real-time",
+      "Profil pengguna dan riwayat absensi",
+      "Log kehadiran dan riwayat pengajuan",
+      "Unggah lampiran (untuk izin)",
+      "Manajemen profil pengguna",
+    ],
+  };
 
-  List<String> challenges = [
-    "Problem: Spoofing locations    ",
-    "Solution: Implemented accurate geofencing with fallback",
-    "GPS checks + coordinate validation on server ",
-  ];
+  final challenges = {
+    'en': [
+      "Problem: Spoofing locations",
+      "Solution: Implemented accurate geofencing with fallback",
+      "GPS checks + coordinate validation on server",
+    ],
+    'id': [
+      "Masalah: Pemalsuan lokasi",
+      "Solusi: Mengimplementasikan geofencing yang akurat dengan fallback",
+      "Pemeriksaan GPS + validasi koordinat di server",
+    ],
+  };
 
   final List<String> imgList = [
     'assets/images/splashscreen.png',
@@ -135,13 +165,11 @@ class _ProjectSectionState extends State<ProjectSection> {
     _startAutoScroll();
     _startAutoScrollDown();
 
-    _controller =
-        VideoPlayerController.asset("assets/videos/record_leader.webm")
-          ..initialize().then((_) {
-            setState(() {});
-            _controller.play();
-            _controller.setLooping(true);
-          });
+    _controller = YoutubePlayerController.fromVideoId(
+      videoId: '1gXNqWoar_k',
+      autoPlay: false,
+      params: const YoutubePlayerParams(showFullscreenButton: true),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       double itemHeight = 300 + 16; // tinggi item + padding
@@ -168,18 +196,8 @@ class _ProjectSectionState extends State<ProjectSection> {
     });
   }
 
-  void _showFullscreenVideo(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return FullscreenVideoDialog(controller: _controller);
-      },
-    );
-  }
-
   @override
   void dispose() {
-    _controller.dispose();
     _timer.cancel();
     scrollControllerList.dispose();
     super.dispose();
@@ -187,233 +205,216 @@ class _ProjectSectionState extends State<ProjectSection> {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = context.locale.languageCode;
     double size =
         MediaQuery.of(context).size.width * 0.9; // 80% dari lebar layar
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // blur halus
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 200, horizontal: 40),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1), // transparan
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
-                ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 300, horizontal: 40),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.lerp(
+                    Colors.white, Colors.black, values)!, // dari putih ke hitam
+                Colors.white, // setengah bawah tetap putih
+              ],
+              stops: [0.0, 0.3], // gradasi hanya sampai setengah
+            ),
+          ),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "${langCode == 'en' ? 'Latest Project' : 'Proyek Terbaru'}",
+                style: GoogleFonts.poppins(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black // sangat transparan
+                    ),
               ),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Latest Project",
-                    style: GoogleFonts.poppins(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black // sangat transparan
-                        ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
+              SizedBox(
+                height: 50,
+              ),
+              isMobile
+                  ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Human Resource Mobile Application - Employee Self Service",
-                                style: GoogleFonts.poppins(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black // sangat transparan
-                                    ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                "A Human Resource application that enables employees to perform daily HR tasks such as check-in/out with location,submit leave/permission/overtime requests, view attendance history, and track approvals — all from a mobile device.",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black // sangat transparan
-                                    ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "🔧 Tech Stack: ",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black, // sangat transparan
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Flutter | Node.js | SQL Server | Provider | REST API ",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black // sangat transparan
-                                    ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "👨‍💻 Role & Responsibility ",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black, // sangat transparan
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: listRole.map((e) {
-                                  return Text(
-                                    "- ${e}",
-                                    maxLines: 2,
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.black // sangat transparan
-                                        ),
-                                  );
-                                }).toList(),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "🔍 Key Features",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black, // sangat transparan
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: features.map((e) {
-                                  return Text(
-                                    "- ${e}",
-                                    maxLines: 2,
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.black // sangat transparan
-                                        ),
-                                  );
-                                }).toList(),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "🧠 Challenges & Solutions",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black, // sangat transparan
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: challenges.map((e) {
-                                  return Text(
-                                    "- ${e}",
-                                    maxLines: 2,
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                        color: Colors.black // sangat transparan
-                                        ),
-                                  );
-                                }).toList(),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "📱 Published On",
-                                maxLines: 2,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black, // sangat transparan
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () => _launchURLToPLaystore(),
-                                child: Text(
-                                  "Play Store",
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${langCode == 'en' ? 'Human Resource Mobile Application - Employee Self Service' : 'Aplikasi Kepegawaian Mobile – Layanan Mandiri Karyawan'}",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black // sangat transparan
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              "${langCode == 'en' ? 'A Human Resource application that enables employees to perform daily HR tasks such as check-in/out with location,submit leave/permission/overtime requests, view attendance history, and track approvals — all from a mobile device.' : 'Aplikasi Sumber Daya Manusia (SDM) yang dirancang untuk memudahkan karyawan dalam menyelesaikan kebutuhan operasional harian, seperti absensi dengan pelacakan lokasi, pengajuan cuti, izin, lembur, serta pemantauan riwayat kehadiran dan proses persetujuan melalui perangkat seluler.'}",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black // sangat transparan
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "🔧 ${langCode == 'en' ? 'Tech Stack :' : 'Teknologi yang di gunakan :'} ",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black, // sangat transparan
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "Flutter | Node.js | SQL Server | Provider | REST API ",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black // sangat transparan
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "👨‍💻 ${langCode == 'en' ? 'Role & Responsibility :' : 'Peran dan Tanggung Jawab :'}",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black, // sangat transparan
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ...listRole[langCode]!.map((e) => Text(
+                                  "- $e",
                                   maxLines: 2,
                                   style: GoogleFonts.poppins(
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 12,
-                                      color: Colors.blue // sangat transparan
-                                      ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () => _launchURLToAppstore(),
-                                child: Text(
-                                  "App Store",
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "🔍 ${langCode == 'en' ? 'Key Features :' : 'Fitur :'}",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black, // sangat transparan
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ...features[langCode]!.map((e) => Text(
+                                  "- $e",
                                   maxLines: 2,
                                   style: GoogleFonts.poppins(
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 12,
-                                      color: Colors.blue // sangat transparan
-                                      ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            height: 600,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.white.withOpacity(0.9),
-                                  Colors.white.withOpacity(0.0),
-                                ],
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "🧠 ${langCode == 'en' ? 'Challenges & Solutions' : 'Permasalahan & Penyelesaian'}",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black, // sangat transparan
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ...challenges[langCode]!.map((e) => Text(
+                                  "- $e",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "📱 ${langCode == 'en' ? 'Published On' : 'Di Terbitkan di :'}",
+                              maxLines: 2,
+                              style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  color: Colors.black, // sangat transparan
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () => _launchURLToPLaystore(),
+                              child: Text(
+                                "Play Store",
+                                maxLines: 2,
+                                style: GoogleFonts.poppins(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                    color: Colors.blue // sangat transparan
+                                    ),
                               ),
                             ),
-                            child: Stack(
-                              children: [
-                                Row(
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () => _launchURLToAppstore(),
+                              child: Text(
+                                "App Store",
+                                maxLines: 2,
+                                style: GoogleFonts.poppins(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 12,
+                                    color: Colors.blue // sangat transparan
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 600,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Colors.white.withOpacity(0.9),
+                                Colors.white.withOpacity(0.0),
+                              ],
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
                                   children: [
                                     Container(
                                       height: 700,
@@ -465,76 +466,368 @@ class _ProjectSectionState extends State<ProjectSection> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 100,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () =>
-                                          _showFullscreenVideo(context),
-                                      child: Container(
-                                        height: 500,
-                                        child: DeviceFrame(
-                                          device: Devices.ios.iPhone15ProMax,
-                                          screen: _controller
-                                                  .value.isInitialized
-                                              ? ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(24),
-                                                  child: AspectRatio(
-                                                    aspectRatio: _controller
-                                                        .value.aspectRatio,
-                                                    child: VideoPlayer(
-                                                        _controller),
-                                                  ),
-                                                )
-                                              : const CircularProgressIndicator(),
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                        colors: [
-                                          Colors.white,
-                                          Colors.white.withOpacity(0.0),
-                                        ],
-                                      ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.white.withOpacity(0.0),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Container(
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.white,
-                                          Colors.white.withOpacity(0.0),
-                                        ],
-                                      ),
+                              ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.white,
+                                        Colors.white.withOpacity(0.0),
+                                      ],
                                     ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => {},
+                          child: Container(
+                            height: 500,
+                            child: DeviceFrame(
+                              device: Devices.ios.iPhone15ProMax,
+                              screen: YoutubePlayerScaffold(
+                                controller: _controller,
+                                builder: (context, player) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(16),
+                                    height: 500,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(24),
+                                      child: player,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${langCode == 'en' ? 'Human Resource Mobile Application - Employee Self Service' : 'Aplikasi Kepegawaian Mobile – Layanan Mandiri Karyawan'}",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black // sangat transparan
+                                      ),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  "${langCode == 'en' ? 'A Human Resource application that enables employees to perform daily HR tasks such as check-in/out with location,submit leave/permission/overtime requests, view attendance history, and track approvals — all from a mobile device.' : 'Aplikasi Sumber Daya Manusia (SDM) yang dirancang untuk memudahkan karyawan dalam menyelesaikan kebutuhan operasional harian, seperti absensi dengan pelacakan lokasi, pengajuan cuti, izin, lembur, serta pemantauan riwayat kehadiran dan proses persetujuan melalui perangkat seluler.'}",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black // sangat transparan
+                                      ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "🔧 ${langCode == 'en' ? 'Tech Stack :' : 'Teknologi yang di gunakan :'} ",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black, // sangat transparan
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Flutter | Node.js | SQL Server | Provider | REST API ",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black // sangat transparan
+                                      ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "👨‍💻 ${langCode == 'en' ? 'Role & Responsibility :' : 'Peran dan Tanggung Jawab :'}",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black, // sangat transparan
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                ...listRole[langCode]!.map((e) => Text(
+                                      "- $e",
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    )),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "🔍 ${langCode == 'en' ? 'Key Features :' : 'Fitur :'}",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black, // sangat transparan
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                ...features[langCode]!.map((e) => Text(
+                                      "- $e",
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    )),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "🧠 ${langCode == 'en' ? 'Challenges & Solutions' : 'Permasalahan & Penyelesaian'}",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black, // sangat transparan
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                ...challenges[langCode]!.map((e) => Text(
+                                      "- $e",
+                                      maxLines: 2,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        color: Colors.black,
+                                      ),
+                                    )),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  "📱 ${langCode == 'en' ? 'Published On' : 'Di Terbitkan di :'}",
+                                  maxLines: 2,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black, // sangat transparan
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () => _launchURLToPLaystore(),
+                                  child: Text(
+                                    "Play Store",
+                                    maxLines: 2,
+                                    style: GoogleFonts.poppins(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 12,
+                                        color: Colors.blue // sangat transparan
+                                        ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                GestureDetector(
+                                  onTap: () => _launchURLToAppstore(),
+                                  child: Text(
+                                    "App Store",
+                                    maxLines: 2,
+                                    style: GoogleFonts.poppins(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 12,
+                                        color: Colors.blue // sangat transparan
+                                        ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              height: 600,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.white.withOpacity(0.9),
+                                    Colors.white.withOpacity(0.0),
+                                  ],
+                                ),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 700,
+                                        child: ScrollConfiguration(
+                                          behavior:
+                                              ScrollConfiguration.of(context)
+                                                  .copyWith(scrollbars: false),
+                                          child: SingleChildScrollView(
+                                            controller: scrollControllerList,
+                                            child: Column(
+                                              children: imgList.map((e) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    height: 300,
+                                                    child: ZoomOnHoverImage(
+                                                      imagePath: e,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 700,
+                                        child: ScrollConfiguration(
+                                          behavior:
+                                              ScrollConfiguration.of(context)
+                                                  .copyWith(scrollbars: false),
+                                          child: SingleChildScrollView(
+                                            controller: scrollControllerList2,
+                                            child: Column(
+                                              children: imgList.map((e) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    height: 300,
+                                                    child: ZoomOnHoverImage(
+                                                      imagePath: e,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {},
+                                        child: Container(
+                                          height: 500,
+                                          child: DeviceFrame(
+                                            device: Devices.ios.iPhone15ProMax,
+                                            screen: YoutubePlayerScaffold(
+                                              controller: _controller,
+                                              builder: (context, player) {
+                                                return Container(
+                                                  padding:
+                                                      const EdgeInsets.all(16),
+                                                  height: 500,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                    child: player,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [
+                                            Colors.white,
+                                            Colors.white.withOpacity(0.0),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.white,
+                                            Colors.white.withOpacity(0.0),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
         Positioned(
@@ -543,7 +836,7 @@ class _ProjectSectionState extends State<ProjectSection> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                'LATEST PROJECT',
+                '${langCode == 'en' ? 'LATEST PROJECT' : 'PROYEK TERBARU'}',
                 style: GoogleFonts.poppins(
                   fontSize: 150,
                   fontWeight: FontWeight.bold,
@@ -555,13 +848,6 @@ class _ProjectSectionState extends State<ProjectSection> {
           ),
         ),
       ],
-    )
-        .animate(
-            target: widget.currentSections == Section.projects ||
-                    widget.scrollController.offset >= 1400
-                ? 1.0
-                : 0.0)
-        .fade(duration: 1500.ms)
-        .slideY(begin: 0.2);
+    );
   }
 }

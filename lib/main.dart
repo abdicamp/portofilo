@@ -1,15 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:portofilo/component/experience.dart';
-import 'component/about_section.dart';
-import 'component/contact_session.dart';
-import 'component/footer.dart';
-import 'component/hero_section.dart';
-import 'component/navbar.dart';
-import 'component/project_section.dart';
 import 'home_page.dart';
 
-void main() {
-  runApp(const PortfolioApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en'), Locale('id')],
+      path: 'assets/translations', // folder untuk .json file
+      fallbackLocale: Locale('en'),
+      child: PortfolioApp(),
+    ),
+  );
 }
 
 class PortfolioApp extends StatelessWidget {
@@ -18,20 +21,22 @@ class PortfolioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Portofolio',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black, // <- ini yang penting
-        primaryColor: Colors.black, // opsional
-        colorScheme: ColorScheme.light(
-          background: Colors.white, // opsional
-          primary: Colors.black, // ganti sesuai gaya kamu
+        locale: context.locale, // penting!
+        title: 'My Portofolio',
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.black, // <- ini yang penting
+          primaryColor: Colors.black, // opsional
+          colorScheme: ColorScheme.light(
+            background: Colors.black, // opsional
+            primary: Colors.black, // ganti sesuai gaya kamu
+          ),
+          textTheme: TextTheme(
+            bodyMedium: TextStyle(color: Colors.black), // pastikan teks hitam
+          ),
         ),
-        textTheme: TextTheme(
-          bodyMedium: TextStyle(color: Colors.black), // pastikan teks hitam
-        ),
-      ),
-      home: Experience()
-    );
+        home: HomePage());
   }
 }

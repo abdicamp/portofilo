@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:portofilo/widgets/switch_langguage.dart';
 import '../home_page.dart'; // Untuk akses enum Section (pastikan importnya benar)
 
 class NavBar extends StatelessWidget {
   final VoidCallback onHomeTap;
   final VoidCallback onAboutTap;
+  final VoidCallback onExperienceTap;
   final VoidCallback onProjectTap;
   final VoidCallback onContactTap;
   final Section currentSection;
@@ -12,6 +14,7 @@ class NavBar extends StatelessWidget {
     super.key,
     required this.onHomeTap,
     required this.onAboutTap,
+    required this.onExperienceTap,
     required this.onProjectTap,
     required this.onContactTap,
     required this.currentSection,
@@ -36,21 +39,49 @@ class NavBar extends StatelessWidget {
             ),
           ),
           if (isMobile)
-            Builder(
-              builder: (context) => IconButton(
-                icon: const Icon(Icons.menu, color: Colors.white),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-              ),
+            Row(
+              children: [
+                LanguageSwitchToggle(),
+                Builder(
+                  builder: (context) => IconButton(
+                    icon: const Icon(Icons.menu, color: Colors.white),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  ),
+                ),
+              ],
             )
           else
             Row(
               children: [
-                _navItem('Home', onHomeTap, currentSection == Section.hero),
-                _navItem('About', onAboutTap, currentSection == Section.about),
-                _navItem('Projects', onProjectTap,
-                    currentSection == Section.projects),
                 _navItem(
-                    'Contact', onContactTap, currentSection == Section.contact),
+                  'Home',
+                  onHomeTap,
+                  currentSection == Section.hero,
+                ),
+                _navItem(
+                  'About',
+                  onAboutTap,
+                  currentSection == Section.about,
+                ),
+                _navItem(
+                  'Experience',
+                  onExperienceTap,
+                  currentSection == Section.experience,
+                ),
+                _navItem(
+                  'Projects',
+                  onProjectTap,
+                  currentSection == Section.projects,
+                ),
+                _navItem(
+                  'Contact',
+                  onContactTap,
+                  currentSection == Section.contact,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: LanguageSwitchToggle(),
+                ),
               ],
             ),
         ],

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,11 +33,11 @@ class _AboutSectionState extends State<AboutSection>
   double gradientFadeOpacity = 1.0;
 
   final aboutMeParagraph = [
-    "I'm a Software Engineer with 4+ years of experience crafting full-stack applications and IoT solutions.",
-    "As a Flutter developer, I’ve built scalable apps across domains — from Human Resource Systems to E-Commerce platforms.",
-    "On the backend, I use Node.js and SQL queries to deliver reliable APIs.",
-    "I also build IoT systems that bridge hardware and software for smart, connected experiences.",
-    "I love turning real-world problems into elegant, scalable digital solutions.",
+    'about_line_1',
+    'about_line_2',
+    'about_line_3',
+    'about_line_4',
+    'about_line_5',
   ];
 
   @override
@@ -45,6 +46,7 @@ class _AboutSectionState extends State<AboutSection>
 
     widget.scrollController.addListener(() {
       final offset = widget.scrollController.offset;
+
       double scale;
 
       if (offset <= 1000) {
@@ -62,7 +64,7 @@ class _AboutSectionState extends State<AboutSection>
 
       setState(() {
         _scale = scale;
-        values = (offset / 150).clamp(0.0, 1.0);
+        values = (offset / 900).clamp(0.0, 1.0);
         print("_scale : $_scale");
       });
     });
@@ -107,7 +109,7 @@ class _AboutSectionState extends State<AboutSection>
     return Stack(
       children: [
         Container(
-          height: 1000,
+          height: 1100,
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -142,7 +144,7 @@ class _AboutSectionState extends State<AboutSection>
                       },
                       blendMode: BlendMode.srcIn,
                       child: Text(
-                        "About Me",
+                        "about_me".tr(),
                         style: GoogleFonts.poppins(
                           fontSize: 56,
                           fontWeight: FontWeight.w800,
@@ -175,37 +177,43 @@ class _AboutSectionState extends State<AboutSection>
                         animate: true,
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: aboutMeParagraph.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        String line = entry.value;
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: aboutMeParagraph.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          String line = entry.value;
 
-                        return TweenAnimationBuilder<double>(
-                          tween: Tween(
-                              begin: 0.0,
-                              end: widget.currentSections != Section.hero
-                                  ? 1.0
-                                  : 0.0),
-                          duration: Duration(milliseconds: 600 + index * 200),
-                          builder: (context, value, child) {
-                            return Opacity(
-                              opacity: value,
-                              child: Transform.translate(
-                                offset: Offset(0, (1 - value) * 20),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: Text(
-                                    line,
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 13, height: 1.6),
+                          return TweenAnimationBuilder<double>(
+                            key: ValueKey(
+                                '${context.locale.languageCode}-$index'),
+                            tween: Tween(
+                                begin: 0.0,
+                                end: widget.currentSections != Section.hero
+                                    ? 1.0
+                                    : 0.0),
+                            duration:
+                                Duration(milliseconds: 1000 + index * 500),
+                            builder: (context, value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Transform.translate(
+                                  offset: Offset(0, (1 - value) * 20),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: Text(
+                                      line.tr(),
+                                      textAlign: TextAlign.justify,
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 13, height: 1.6),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ).animate().fade(duration: 800.ms).slideY(begin: 0.2)
@@ -222,7 +230,7 @@ class _AboutSectionState extends State<AboutSection>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "About Me",
+                              "about_me".tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 56,
                                 fontWeight: FontWeight.w800,
@@ -243,6 +251,8 @@ class _AboutSectionState extends State<AboutSection>
                                 String line = entry.value;
 
                                 return TweenAnimationBuilder<double>(
+                                  key: ValueKey(
+                                      '${context.locale.languageCode}-$index'),
                                   tween: Tween(
                                       begin: 0.0,
                                       end:
@@ -260,7 +270,7 @@ class _AboutSectionState extends State<AboutSection>
                                           padding:
                                               const EdgeInsets.only(bottom: 12),
                                           child: Text(
-                                            line,
+                                            line.tr(),
                                             textAlign: TextAlign.justify,
                                             style: GoogleFonts.poppins(
                                                 fontSize: 18, height: 1.6),
@@ -300,7 +310,7 @@ class _AboutSectionState extends State<AboutSection>
             child: Align(
               alignment: Alignment.topLeft,
               child: Text(
-                'ABOUT ME',
+                'about_me_capital'.tr(),
                 style: GoogleFonts.poppins(
                   fontSize: 180,
                   fontWeight: FontWeight.bold,

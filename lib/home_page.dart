@@ -64,11 +64,16 @@ class _HomePageState extends State<HomePage> {
         currentSection = Section.hero;
       } else if (offset >= 100 && offset <= 910) {
         currentSection = Section.about;
-      } else if (offset >= 1800 && offset <= 3084) {
+      } else if (offset >= 1800 && offset <= 2895) {
+        currentSection = Section.experience;
+      } else if (offset >= 2895 && offset <= 3084) {
         currentSection = Section.projects;
-      } else if (offset >= 2240 && offset <= 2816) {
-        currentSection = Section.contact;
       }
+      // else if (offset >= 1800 && offset <= 3084) {
+      //   currentSection = Section.projects;
+      // } else if (offset >= 2240 && offset <= 2816) {
+      //   currentSection = Section.contact;
+      // }
     });
   }
 
@@ -81,6 +86,13 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(vertical: 60),
           children: [
             ListTile(
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+                scrollTo(heroSectionKey);
+              },
+            ),
+            ListTile(
               title: const Text('About'),
               onTap: () {
                 Navigator.pop(context);
@@ -88,10 +100,17 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('Projects'),
+              title: const Text('Experience'),
               onTap: () {
                 Navigator.pop(context);
                 scrollTo(experienceKey);
+              },
+            ),
+            ListTile(
+              title: const Text('Projects'),
+              onTap: () {
+                Navigator.pop(context);
+                scrollTo(projectSectionKey);
               },
             ),
             ListTile(
@@ -112,12 +131,12 @@ class _HomePageState extends State<HomePage> {
             delegate: _NavbarDelegate(
               onHomeTap: () => scrollTo(heroSectionKey),
               onAboutTap: () => scrollTo(aboutKey),
+              onExperienceTap: () => scrollTo(experienceKey),
               onProjectTap: () => scrollTo(projectSectionKey),
               onContactTap: () => scrollTo(contactKey),
               currentSection: currentSection,
             ),
           ),
-
 
           SliverToBoxAdapter(
               key: heroSectionKey,
@@ -131,6 +150,12 @@ class _HomePageState extends State<HomePage> {
                 currentSections: currentSection,
               )),
 
+          SliverToBoxAdapter(
+              key: experienceKey,
+              child: Experience(
+                scrollController: scrollController,
+                currentSections: currentSection,
+              )),
           SliverToBoxAdapter(
               key: projectSectionKey,
               child: ProjectSection(
@@ -154,8 +179,8 @@ class _HomePageState extends State<HomePage> {
           //     child: ProjectSection(
           //         // currentSections: currentSection,
           //         )),
-          SliverToBoxAdapter(key: contactKey, child: ContactSection()),
-          SliverToBoxAdapter(key: footerSectionKey, child: Footer()),
+          // SliverToBoxAdapter(key: contactKey, child: ContactSection()),
+          // SliverToBoxAdapter(key: footerSectionKey, child: Footer()),
         ],
       ),
     );
@@ -165,6 +190,7 @@ class _HomePageState extends State<HomePage> {
 class _NavbarDelegate extends SliverPersistentHeaderDelegate {
   final VoidCallback onHomeTap;
   final VoidCallback onAboutTap;
+  final VoidCallback onExperienceTap;
   final VoidCallback onProjectTap;
   final VoidCallback onContactTap;
   final Section currentSection;
@@ -172,6 +198,7 @@ class _NavbarDelegate extends SliverPersistentHeaderDelegate {
   const _NavbarDelegate({
     required this.onHomeTap,
     required this.onAboutTap,
+    required this.onExperienceTap,
     required this.onProjectTap,
     required this.onContactTap,
     required this.currentSection,
@@ -187,6 +214,7 @@ class _NavbarDelegate extends SliverPersistentHeaderDelegate {
         child: NavBar(
           onHomeTap: onHomeTap,
           onAboutTap: onAboutTap,
+          onExperienceTap: onExperienceTap,
           onProjectTap: onProjectTap,
           onContactTap: onContactTap,
           currentSection: currentSection,

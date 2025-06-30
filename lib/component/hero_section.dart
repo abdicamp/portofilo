@@ -1,10 +1,12 @@
 import 'dart:ui';
-
+import 'dart:html' as html;
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:portofilo/widgets/switch_langguage.dart';
 
 class HeroSection extends StatefulWidget {
   ScrollController scrollController;
@@ -27,12 +29,15 @@ class _HeroSectionState extends State<HeroSection>
     super.initState();
     widget.scrollController.addListener(() {
       final offset = widget.scrollController.offset;
+      final start = 0.0;
+      final end = 900;
 
       // Hitung skala: makin ke bawah makin besar (maks 1.5x)
+      final progress = ((offset - start) / (end - start)).clamp(0.0, 1.0);
       final newScale = 1.0 + (offset / 300.0).clamp(0.0, 0.5); // max 1.5x
       setState(() {
         _scale = newScale;
-        values = (offset / 150).clamp(0.0, 1.0);
+        values = progress;
       });
     });
 
@@ -60,8 +65,8 @@ class _HeroSectionState extends State<HeroSection>
   Widget build(BuildContext context) {
     double size =
         MediaQuery.of(context).size.width * 0.9; // 80% dari lebar layar
-
     final isMobile = MediaQuery.of(context).size.width < 600;
+    final langCode = context.locale.languageCode;
 
     return Container(
       height: 900,
@@ -132,33 +137,26 @@ class _HeroSectionState extends State<HeroSection>
                             //   animate: true,
                             // ),
                             AnimatedTextKit(
+                              key: ValueKey(context.locale.languageCode),
                               totalRepeatCount: 1,
                               pause: const Duration(milliseconds: 1000),
                               displayFullTextOnTap: true,
                               stopPauseOnTap: true,
                               animatedTexts: [
                                 TypewriterAnimatedText(
-                                  'Hello, I am Abdi 👋',
+                                  'hello'.tr(),
                                   textStyle: GoogleFonts.poppins(
                                     fontSize: 48,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                  speed: const Duration(milliseconds: 100),
+                                  speed: const Duration(milliseconds: 300),
                                 ),
                               ],
                             ),
-                            // Text(
-                            //   'Hi, I’m Abdi',
-                            //   style: GoogleFonts.poppins(
-                            //     fontSize: 48,
-                            //     color: Colors.white,
-                            //     fontWeight: FontWeight.bold,
-                            //   ),
-                            // ),
                             const SizedBox(height: 10),
                             Text(
-                              'Software Engineer — Flutter, Node.js, SQL & IoT',
+                              'title_hero_section'.tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
                                 color: Colors.white70,
@@ -166,12 +164,62 @@ class _HeroSectionState extends State<HeroSection>
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              'I build mobile apps, APIs, and smart connected systems.',
+                              'sub_title_hero_section'.tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 color: Colors.white70,
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            langCode == 'en'
+                                ? OutlinedButton(
+                                    onPressed: () {
+                                      html.AnchorElement anchorElement =
+                                          html.AnchorElement(
+                                              href:
+                                                  'assets/CV_Muhammad_Abdillah_Dzikri_en.pdf');
+                                      anchorElement.download =
+                                          "CV_Muhammad_Abdillah_Dzikri.pdf";
+                                      anchorElement.click();
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Colors.white), // warna bingkai
+                                      backgroundColor:
+                                          Colors.transparent, // transparan
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "cv".tr(),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                : OutlinedButton(
+                                    onPressed: () {
+                                      html.AnchorElement anchorElement =
+                                          html.AnchorElement(
+                                              href:
+                                                  'assets/CV_Muhammad_Abdillah_Dzikri.pdf');
+                                      anchorElement.download =
+                                          "CV_Muhammad_Abdillah_Dzikri.pdf";
+                                      anchorElement.click();
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Colors.white), // warna bingkai
+                                      backgroundColor:
+                                          Colors.transparent, // transparan
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "cv".tr(),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
                           ],
                         ),
                       ),
@@ -205,13 +253,14 @@ class _HeroSectionState extends State<HeroSection>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             AnimatedTextKit(
+                              key: ValueKey(context.locale.languageCode),
                               totalRepeatCount: 1,
                               pause: const Duration(milliseconds: 1000),
                               displayFullTextOnTap: true,
                               stopPauseOnTap: true,
                               animatedTexts: [
                                 TypewriterAnimatedText(
-                                  'Hi, I’m Abdi 👋',
+                                  'hello'.tr(),
                                   textStyle: GoogleFonts.poppins(
                                     fontSize: 48,
                                     color: Colors.white,
@@ -223,7 +272,7 @@ class _HeroSectionState extends State<HeroSection>
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Software Engineer — Flutter, Node.js, SQL & IoT',
+                              'title_hero_section'.tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 24,
                                 color: Colors.white70,
@@ -231,12 +280,62 @@ class _HeroSectionState extends State<HeroSection>
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              'I build mobile apps, APIs, and smart connected systems.',
+                              'sub_title_hero_section'.tr(),
                               style: GoogleFonts.poppins(
                                 fontSize: 15,
                                 color: Colors.white70,
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            langCode == 'en'
+                                ? OutlinedButton(
+                                    onPressed: () {
+                                      html.AnchorElement anchorElement =
+                                          html.AnchorElement(
+                                              href:
+                                                  'assets/CV_Muhammad_Abdillah_Dzikri_en.pdf');
+                                      anchorElement.download =
+                                          "CV_Muhammad_Abdillah_Dzikri.pdf";
+                                      anchorElement.click();
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Colors.white), // warna bingkai
+                                      backgroundColor:
+                                          Colors.transparent, // transparan
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "cv".tr(),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                : OutlinedButton(
+                                    onPressed: () {
+                                      html.AnchorElement anchorElement =
+                                          html.AnchorElement(
+                                              href:
+                                                  'assets/CV_Muhammad_Abdillah_Dzikri.pdf');
+                                      anchorElement.download =
+                                          "CV_Muhammad_Abdillah_Dzikri.pdf";
+                                      anchorElement.click();
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                          color: Colors.white), // warna bingkai
+                                      backgroundColor:
+                                          Colors.transparent, // transparan
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "cv".tr(),
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )
                           ],
                         ),
                       ),
